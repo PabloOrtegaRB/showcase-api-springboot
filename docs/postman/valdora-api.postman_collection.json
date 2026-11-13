@@ -1,0 +1,80 @@
+{
+  "info": {
+    "name": "API Valdora (demostrativa)",
+    "description": "Proyecto demostrativo — desarrollo propio, no asociado a un cliente real. Datos ficticios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081" },
+    { "key": "clienteId", "value": "1" },
+    { "key": "productoId", "value": "1" },
+    { "key": "solicitudId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        { "name": "Listar clientes activos", "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/clientes?activo=true&pagina=0&tamano=10" } },
+        { "name": "Obtener cliente", "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/clientes/{{clienteId}}" } },
+        {
+          "name": "Crear cliente",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/v1/clientes",
+            "body": { "mode": "raw", "raw": "{\n  \"rut\": \"12.345.678-5\",\n  \"razonSocial\": \"Comercial Demo SpA\",\n  \"email\": \"contacto@demo.example\",\n  \"telefono\": \"+56 9 1234 5678\",\n  \"comuna\": \"Santiago\"\n}" }
+          }
+        },
+        {
+          "name": "Crear cliente inválido (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/v1/clientes",
+            "body": { "mode": "raw", "raw": "{\n  \"rut\": \"12.345.678-9\",\n  \"razonSocial\": \"\",\n  \"email\": \"no-es-correo\",\n  \"comuna\": \"Santiago\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        { "name": "Listar por categoría", "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/productos?categoria=CLIMATIZACION" } },
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/v1/productos",
+            "body": { "mode": "raw", "raw": "{\n  \"sku\": \"REP-2001\",\n  \"nombre\": \"Correa de transmisión B-52\",\n  \"categoria\": \"REPUESTOS\",\n  \"precio\": 8490,\n  \"stock\": 12\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Solicitudes",
+      "item": [
+        { "name": "Listar recibidas de alta prioridad", "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/solicitudes?estado=RECIBIDA&prioridad=ALTA" } },
+        {
+          "name": "Crear solicitud",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/v1/solicitudes",
+            "body": { "mode": "raw", "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"productoId\": {{productoId}},\n  \"titulo\": \"Mantención preventiva de chiller\",\n  \"prioridad\": \"ALTA\"\n}" }
+          }
+        },
+        {
+          "name": "Pasar a EN_PROCESO",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/v1/solicitudes/{{solicitudId}}/estado",
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"EN_PROCESO\",\n  \"comentario\": \"Técnico asignado\"\n}" }
+          }
+        }
+      ]
+    },
+    { "name": "Estado de salud", "request": { "method": "GET", "url": "{{baseUrl}}/actuator/health" } }
+  ]
+}

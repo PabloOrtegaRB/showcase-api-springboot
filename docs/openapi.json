@@ -1,0 +1,1057 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Valdora (demostrativa)",
+    "description": "API REST de clientes, productos y solicitudes de servicio, con validaciones, paginación, filtros y errores en formato RFC 9457. **Proyecto demostrativo — desarrollo propio, no asociado a un cliente real.** Todos los datos son ficticios.",
+    "contact": {
+      "name": "Pablo Ortega Rubio",
+      "url": "https://github.com/PabloOrtegaRB"
+    },
+    "license": {
+      "name": "MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8092",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Solicitudes",
+      "description": "Solicitudes de servicio y su ciclo de vida (datos ficticios)"
+    },
+    {
+      "name": "Clientes",
+      "description": "Empresas que solicitan servicios (datos ficticios)"
+    },
+    {
+      "name": "Productos",
+      "description": "Catálogo de repuestos, herramientas y equipos (datos ficticios)"
+    }
+  ],
+  "paths": {
+    "/api/v1/productos/{id}": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtiene un producto",
+        "operationId": "obtener",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductoSalida"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Actualiza un producto",
+        "operationId": "actualizar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductoEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductoSalida"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Elimina un producto que no esté asociado a solicitudes",
+        "operationId": "eliminar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/clientes/{id}": {
+      "get": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Obtiene un cliente",
+        "operationId": "obtener_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteSalida"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Actualiza un cliente",
+        "operationId": "actualizar_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClienteEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteSalida"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Elimina un cliente sin solicitudes asociadas",
+        "operationId": "eliminar_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/solicitudes": {
+      "get": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Lista solicitudes con filtros y paginación (más recientes primero)",
+        "operationId": "listar",
+        "parameters": [
+          {
+            "name": "estado",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "RECIBIDA",
+                "EN_PROCESO",
+                "COMPLETADA",
+                "CANCELADA"
+              ]
+            }
+          },
+          {
+            "name": "prioridad",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "BAJA",
+                "MEDIA",
+                "ALTA",
+                "CRITICA"
+              ]
+            }
+          },
+          {
+            "name": "clienteId",
+            "in": "query",
+            "description": "Id del cliente",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "desde",
+            "in": "query",
+            "description": "Creadas desde esta fecha (AAAA-MM-DD, inclusive)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "hasta",
+            "in": "query",
+            "description": "Creadas hasta esta fecha (AAAA-MM-DD, inclusive)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Página, desde 0",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "tamano",
+            "in": "query",
+            "description": "Elementos por página (1 a 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10,
+              "maximum": 100,
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginaSolicitudSalida"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Registra una solicitud (el cliente debe estar activo)",
+        "operationId": "crear",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SolicitudSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/productos": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Lista productos con filtros y paginación",
+        "operationId": "listar_1",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Texto en nombre o SKU",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoria",
+            "in": "query",
+            "description": "Categoría exacta",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REPUESTOS",
+                "HERRAMIENTAS",
+                "CLIMATIZACION",
+                "ELECTRICIDAD",
+                "SEGURIDAD"
+              ]
+            }
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "description": "true: solo activos · false: solo inactivos",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Página, desde 0",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "tamano",
+            "in": "query",
+            "description": "Elementos por página (1 a 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10,
+              "maximum": 100,
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginaProductoSalida"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Crea un producto (el SKU no puede repetirse)",
+        "operationId": "crear_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductoEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductoSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/clientes": {
+      "get": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Lista clientes con filtros y paginación",
+        "operationId": "listar_2",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Texto en razón social, correo o RUT",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "comuna",
+            "in": "query",
+            "description": "Comuna exacta",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "description": "true: solo activos · false: solo inactivos",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Página, desde 0",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "tamano",
+            "in": "query",
+            "description": "Elementos por página (1 a 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10,
+              "maximum": 100,
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginaClienteSalida"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Crea un cliente (valida el RUT y que no esté repetido)",
+        "operationId": "crear_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClienteEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/solicitudes/{id}/estado": {
+      "patch": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Cambia el estado de una solicitud (409 si la transición no está permitida)",
+        "operationId": "cambiarEstado",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambioEstadoEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SolicitudSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/solicitudes/{id}": {
+      "get": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Obtiene una solicitud",
+        "operationId": "obtener_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SolicitudSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProductoEntrada": {
+        "type": "object",
+        "description": "Datos para crear o actualizar un producto",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "example": "REP-1001",
+            "minLength": 1,
+            "pattern": "^[A-Za-z]{3}-\\d{4}$"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Filtro de aire 24x24 pulgadas",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "REPUESTOS",
+              "HERRAMIENTAS",
+              "CLIMATIZACION",
+              "ELECTRICIDAD",
+              "SEGURIDAD"
+            ]
+          },
+          "precio": {
+            "type": "number",
+            "description": "Precio en pesos chilenos, sin decimales",
+            "example": 12990,
+            "minimum": 1
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32",
+            "example": 48,
+            "minimum": 0
+          },
+          "activo": {
+            "type": "boolean",
+            "description": "Si no se indica, el producto queda activo",
+            "example": true
+          }
+        },
+        "required": [
+          "categoria",
+          "nombre",
+          "precio",
+          "sku",
+          "stock"
+        ]
+      },
+      "ProductoSalida": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "REPUESTOS",
+              "HERRAMIENTAS",
+              "CLIMATIZACION",
+              "ELECTRICIDAD",
+              "SEGURIDAD"
+            ]
+          },
+          "precio": {
+            "type": "number"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activo": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ClienteEntrada": {
+        "type": "object",
+        "description": "Datos para crear o actualizar un cliente",
+        "properties": {
+          "rut": {
+            "type": "string",
+            "example": "76.100.000-4",
+            "minLength": 1
+          },
+          "razonSocial": {
+            "type": "string",
+            "example": "Bodegas Arrayán Sur SpA",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "contacto@arrayan-sur.example",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "telefono": {
+            "type": "string",
+            "example": "+56 9 5555 0100",
+            "pattern": "^$|^\\+?56\\s?9\\s?\\d{4}\\s?\\d{4}$"
+          },
+          "comuna": {
+            "type": "string",
+            "example": "Santiago",
+            "maxLength": 40,
+            "minLength": 0
+          },
+          "activo": {
+            "type": "boolean",
+            "description": "Si no se indica, el cliente queda activo",
+            "example": true
+          }
+        },
+        "required": [
+          "comuna",
+          "email",
+          "razonSocial",
+          "rut"
+        ]
+      },
+      "ClienteSalida": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rut": {
+            "type": "string"
+          },
+          "razonSocial": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          },
+          "comuna": {
+            "type": "string"
+          },
+          "activo": {
+            "type": "boolean"
+          },
+          "fechaRegistro": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "SolicitudEntrada": {
+        "type": "object",
+        "description": "Datos para registrar una solicitud de servicio",
+        "properties": {
+          "clienteId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "productoId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Producto relacionado (opcional)",
+            "example": 3
+          },
+          "titulo": {
+            "type": "string",
+            "example": "Mantención preventiva de chiller",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "descripcion": {
+            "type": "string",
+            "example": "Revisión trimestral del equipo de la planta 2.",
+            "maxLength": 1000,
+            "minLength": 0
+          },
+          "prioridad": {
+            "type": "string",
+            "enum": [
+              "BAJA",
+              "MEDIA",
+              "ALTA",
+              "CRITICA"
+            ]
+          }
+        },
+        "required": [
+          "clienteId",
+          "prioridad",
+          "titulo"
+        ]
+      },
+      "ClienteResumen": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "razonSocial": {
+            "type": "string"
+          }
+        }
+      },
+      "ProductoResumen": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          }
+        }
+      },
+      "SolicitudSalida": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "titulo": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "prioridad": {
+            "type": "string",
+            "enum": [
+              "BAJA",
+              "MEDIA",
+              "ALTA",
+              "CRITICA"
+            ]
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "RECIBIDA",
+              "EN_PROCESO",
+              "COMPLETADA",
+              "CANCELADA"
+            ]
+          },
+          "estadosSiguientes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "RECIBIDA",
+                "EN_PROCESO",
+                "COMPLETADA",
+                "CANCELADA"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "cliente": {
+            "$ref": "#/components/schemas/ClienteResumen"
+          },
+          "producto": {
+            "$ref": "#/components/schemas/ProductoResumen"
+          },
+          "comentarioEstado": {
+            "type": "string"
+          },
+          "creadaEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actualizadaEn": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CambioEstadoEntrada": {
+        "type": "object",
+        "description": "Cambio de estado de una solicitud",
+        "properties": {
+          "estado": {
+            "type": "string",
+            "enum": [
+              "RECIBIDA",
+              "EN_PROCESO",
+              "COMPLETADA",
+              "CANCELADA"
+            ]
+          },
+          "comentario": {
+            "type": "string",
+            "example": "Técnico asignado para el martes.",
+            "maxLength": 300,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "estado"
+        ]
+      },
+      "PaginaSolicitudSalida": {
+        "type": "object",
+        "properties": {
+          "contenido": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SolicitudSalida"
+            }
+          },
+          "pagina": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tamano": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElementos": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPaginas": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginaProductoSalida": {
+        "type": "object",
+        "properties": {
+          "contenido": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductoSalida"
+            }
+          },
+          "pagina": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tamano": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElementos": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPaginas": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginaClienteSalida": {
+        "type": "object",
+        "properties": {
+          "contenido": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClienteSalida"
+            }
+          },
+          "pagina": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tamano": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElementos": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPaginas": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

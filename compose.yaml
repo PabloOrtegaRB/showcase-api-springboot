@@ -1,0 +1,30 @@
+# API + MySQL 8. Copia .env.example a .env y cambia la contraseña antes de usarlo.
+# Nota: este archivo no se ejecutó en el entorno donde se verificó el proyecto.
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-valdora}
+      MYSQL_USER: ${DB_USER:-valdora}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      DB_HOST: mysql
+      DB_NAME: ${DB_NAME:-valdora}
+      DB_USER: ${DB_USER:-valdora}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8081:8081"
